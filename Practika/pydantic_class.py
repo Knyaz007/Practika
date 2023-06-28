@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from fastapi import BaseModel
 from datetime import datetime
 
 

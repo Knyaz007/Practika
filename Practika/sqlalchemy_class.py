@@ -1,8 +1,9 @@
+from datetime import datetime
+from typing import List, Optional
+
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-from typing import List, Optional
 
 Base = declarative_base()
 
