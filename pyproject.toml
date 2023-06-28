@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "githubpractika6semestr"
+version = "0.1.0"
+description = ""
+authors = ["Vladimir"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.98.0"
+dict = "^2020.12.3"
+datetime = "^5.1"
+basemodel = "^20190604.1625"
+uvicorn = "^0.22.0"
+flake8 = "^6.0.0"
+pytest = "^7.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
