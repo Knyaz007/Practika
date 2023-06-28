@@ -62,19 +62,6 @@ pytz = "*"
 "zope.interface" = "*"
 
 [[package]]
-name = "dict"
-version = "2020.12.3"
-description = "dict replacement"
-optional = false
-python-versions = "*"
-files = [
-    {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
-]
-
-[package.dependencies]
-values = "*"
-
-[[package]]
 name = "exceptiongroup"
 version = "1.1.1"
 description = "Backport of PEP 654 (exception groups)"
@@ -384,16 +371,6 @@ h11 = ">=0.8"
 standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.4)"]
 
 [[package]]
-name = "values"
-version = "2020.12.3"
-description = "values.get(input) - create list from input"
-optional = false
-python-versions = "*"
-files = [
-    {file = "values-2020.12.3.tar.gz", hash = "sha256:30b1b74674b546188b77d8398de17ea49f3692191114da43c703bda5b54402f5"},
-]
-
-[[package]]
 name = "zope-interface"
 version = "6.0"
 description = "Interfaces for Python"
@@ -443,4 +420,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6efe4540f0a569e46951784fe29f84c2b4f8fdd097072116f2d2e09b3d97052a"
+content-hash = "94fc5447784c61ab8e41e5669f8a78321e4c1cd057f18b35836ef16f60c29363"

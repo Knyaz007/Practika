@@ -8,7 +8,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.98.0"
-dict = "^2020.12.3"
 datetime = "^5.1"
 uvicorn = "^0.22.0"
 flake8 = "^6.0.0"
