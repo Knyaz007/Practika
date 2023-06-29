@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from typing import Dict
 
+from fastapi.openapi.utils import get_openapi
+
 app = FastAPI()
+
+# Определите свои пути и операции здесь
 
 # Функция для получения Swagger-схемы
 def custom_openapi():
