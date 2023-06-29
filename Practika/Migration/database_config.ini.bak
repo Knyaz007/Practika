@@ -1,0 +1,6 @@
+[database]
+username = student
+password = 1234
+host = LocalHost
+port = 5432
+database = practika

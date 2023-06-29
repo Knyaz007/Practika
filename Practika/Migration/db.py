@@ -34,7 +34,7 @@ database = database_config["database"]
 # Далее можно использовать SQLALCHEMY_DATABASE_URL для создания подключения к базе данных
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://student:1234@LocalHost:5432/practika2"
+#SQLALCHEMY_DATABASE_URL = "postgresql://student:1234@LocalHost:5432/practika2"
 
 ## Чтение параметров из текстового документа
 #with open("path/to/file.txt", "r") as file:
@@ -46,13 +46,33 @@ SQLALCHEMY_DATABASE_URL = "postgresql://student:1234@LocalHost:5432/practika2"
 #    database = lines[4].strip()
 
 ## Формирование строки подключения
-#SQLALCHEMY_DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 metadata = Base.metadata
+# Получение списка таблиц
+table_names = metadata.tables.keys()
+
+# Вывод имен таблиц
+#for table_name in table_names:
+#    print(table_name)
+
+
+    
+from sqlalchemy import create_engine, MetaData
+
+# Создание объекта MetaData
+metadata = MetaData()
+
+# Создание движка для подключения к базе данных
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+# Загрузка информации о таблицах из базы данных
+metadata.reflect(bind=engine)
+
 # Получение списка таблиц
 table_names = metadata.tables.keys()
 
