@@ -1,1 +1,1 @@
-python GitHubPractika6Semestr\main.py
+python Practika\main.py

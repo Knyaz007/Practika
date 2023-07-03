@@ -42,7 +42,7 @@ else:
 
      # Получение значения поля script_location
     script_location = alembic_config.get_main_option("script_location")
-    print(f" version_locations: {script_location}")
+    print(f" script_location: {script_location}")
 
     ## Изменение параметра sqlalchemy.url
     #original_location = db.change_sqlalchemy_url(f"postgresql://{db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
