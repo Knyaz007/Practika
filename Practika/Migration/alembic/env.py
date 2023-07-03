@@ -5,6 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
+import psycopg2
 import db
 
 # this is the Alembic Config object, which provides

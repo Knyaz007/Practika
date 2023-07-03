@@ -18,8 +18,11 @@ config_path = os.path.join(directory, "alembic.ini")
 if not os.path.exists(config_path):
     print(f"Config file '{config_path}' not found")
 else:
+
+    script_location = os.path.join(directory, "alembic")
+
     # Изменение файла параметра script_location = Migration/alembic
-    original_location = db.change_script_location("Migration/alembic")
+    #original_location = db.change_script_location("Migration/alembic")
 
     # Формирование пути к директории с миграциями
     migration_directory = os.path.join(directory, "alembic", "versions")
@@ -30,12 +33,19 @@ else:
     # Установка пути к директории с миграциями
     alembic_config.set_main_option("version_locations", migration_directory)
 
+    # Установка пути к криптам  
+    alembic_config.set_main_option("script_location", script_location)
+
     # Получение значения поля version_locations
     version_locations = alembic_config.get_main_option("version_locations")
     print(f" version_locations: {version_locations}")
 
-    # Изменение параметра sqlalchemy.url
-    original_location = db.change_sqlalchemy_url(f"postgresql://{db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
+     # Получение значения поля script_location
+    script_location = alembic_config.get_main_option("script_location")
+    print(f" version_locations: {script_location}")
+
+    ## Изменение параметра sqlalchemy.url
+    #original_location = db.change_sqlalchemy_url(f"postgresql://{db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
 
     # Создание новой миграции
     command.revision(alembic_config, autogenerate=True, message="New migration")
