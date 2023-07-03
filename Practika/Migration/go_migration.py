@@ -18,7 +18,7 @@ config_path = os.path.join(directory, "alembic.ini")
 if not os.path.exists(config_path):
     print(f"Config file '{config_path}' not found")
 else:
-
+    # Формирование пути к директории с скриптами
     script_location = os.path.join(directory, "alembic")
 
     # Изменение файла параметра script_location = Migration/alembic
