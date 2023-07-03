@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from alembic import context
 import configparser
@@ -28,29 +29,29 @@ def read_database_config(file_path):
 
 
 def change_sqlalchemy_url(new_url):
-    # Этот обновленный код создает временную копию alembic.ini файла,
-    # изменяет sqlalchemy.url значение во временной копии с сохранением комментариев,
-    # а затем заменяет исходный файл измененной копией.
+    # Р­С‚РѕС‚ РѕР±РЅРѕРІР»РµРЅРЅС‹Р№ РєРѕРґ СЃРѕР·РґР°РµС‚ РІСЂРµРјРµРЅРЅСѓСЋ РєРѕРїРёСЋ alembic.ini С„Р°Р№Р»Р°,
+    # РёР·РјРµРЅСЏРµС‚ sqlalchemy.url Р·РЅР°С‡РµРЅРёРµ РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ,
+    # Р° Р·Р°С‚РµРј Р·Р°РјРµРЅСЏРµС‚ РёСЃС…РѕРґРЅС‹Р№ С„Р°Р№Р» РёР·РјРµРЅРµРЅРЅРѕР№ РєРѕРїРёРµР№.
 
-    # Получение абсолютного пути к файлу go_migration.py
+    # РџРѕР»СѓС‡РµРЅРёРµ Р°Р±СЃРѕР»СЋС‚РЅРѕРіРѕ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ go_migration.py
     file_path = os.path.abspath(__file__)
 
-    # Получение пути к директории, содержащей файл go_migration.py
+    # РџРѕР»СѓС‡РµРЅРёРµ РїСѓС‚Рё Рє РґРёСЂРµРєС‚РѕСЂРёРё, СЃРѕРґРµСЂР¶Р°С‰РµР№ С„Р°Р№Р» go_migration.py
     directory = os.path.dirname(file_path)
 
-    # Формирование пути к файлу alembic.ini
+    # Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ alembic.ini
     config_path = os.path.join(directory, "alembic.ini")
 
-    # Проверка существования файла alembic.ini
+    # РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ С„Р°Р№Р»Р° alembic.ini
     if not os.path.exists(config_path):
         print(f"Config file '{config_path}' not found")
         return
 
-    # Создание временной копии файла alembic.ini
+    # РЎРѕР·РґР°РЅРёРµ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё С„Р°Р№Р»Р° alembic.ini
     temp_config_path = os.path.join(directory, "alembic_temp.ini")
     shutil.copy2(config_path, temp_config_path)
 
-    # Изменение значения sqlalchemy.url во временной копии
+    # РР·РјРµРЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ sqlalchemy.url РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё
     with open(temp_config_path, 'r') as temp_config_file:
         lines = temp_config_file.readlines()
 
@@ -61,7 +62,7 @@ def change_sqlalchemy_url(new_url):
             else:
                 temp_config_file.write(line)
 
-    # Замена исходного файла alembic.ini временной копией
+    # Р—Р°РјРµРЅР° РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° alembic.ini РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРµР№
     shutil.move(temp_config_path, config_path)
 
 
@@ -80,29 +81,29 @@ metadata = Base.metadata
 
 
 def change_script_location(new_location):
-    # Этот обновленный код создает временную копию alembic.ini файла,
-    # изменяет script_location значение во временной копии с сохранением комментариев,
-    # а затем заменяет исходный файл измененной копией.
+    # Р­С‚РѕС‚ РѕР±РЅРѕРІР»РµРЅРЅС‹Р№ РєРѕРґ СЃРѕР·РґР°РµС‚ РІСЂРµРјРµРЅРЅСѓСЋ РєРѕРїРёСЋ alembic.ini С„Р°Р№Р»Р°,
+    # РёР·РјРµРЅСЏРµС‚ script_location Р·РЅР°С‡РµРЅРёРµ РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ,
+    # Р° Р·Р°С‚РµРј Р·Р°РјРµРЅСЏРµС‚ РёСЃС…РѕРґРЅС‹Р№ С„Р°Р№Р» РёР·РјРµРЅРµРЅРЅРѕР№ РєРѕРїРёРµР№.
 
-    # Получение абсолютного пути к файлу go_migration.py
+    # РџРѕР»СѓС‡РµРЅРёРµ Р°Р±СЃРѕР»СЋС‚РЅРѕРіРѕ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ go_migration.py
     file_path = os.path.abspath(__file__)
 
-    # Получение пути к директории, содержащей файл go_migration.py
+    # РџРѕР»СѓС‡РµРЅРёРµ РїСѓС‚Рё Рє РґРёСЂРµРєС‚РѕСЂРёРё, СЃРѕРґРµСЂР¶Р°С‰РµР№ С„Р°Р№Р» go_migration.py
     directory = os.path.dirname(file_path)
 
-    # Формирование пути к файлу alembic.ini
+    # Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ alembic.ini
     config_path = os.path.join(directory, "alembic.ini")
 
-    # Проверка существования файла alembic.ini
+    # РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ С„Р°Р№Р»Р° alembic.ini
     if not os.path.exists(config_path):
         print(f"Config file '{config_path}' not found")
         return
 
-    # Создание временной копии файла alembic.ini
+    # РЎРѕР·РґР°РЅРёРµ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё С„Р°Р№Р»Р° alembic.ini
     temp_config_path = os.path.join(directory, "alembic_temp.ini")
     shutil.copy2(config_path, temp_config_path)
 
-    # Изменение значения script_location во временной копии
+    # РР·РјРµРЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ script_location РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё
     with open(temp_config_path, 'r') as temp_config_file:
         lines = temp_config_file.readlines()
 
@@ -113,5 +114,5 @@ def change_script_location(new_location):
             else:
                 temp_config_file.write(line)
 
-    # Замена исходного файла alembic.ini временной копией
+    # Р—Р°РјРµРЅР° РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° alembic.ini РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРµР№
     shutil.move(temp_config_path, config_path)

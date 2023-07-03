@@ -5,43 +5,43 @@ import os
 import shutil
 import db
 
-# Получение абсолютного пути к файлу go_migration.py
+# РџРѕР»СѓС‡РµРЅРёРµ Р°Р±СЃРѕР»СЋС‚РЅРѕРіРѕ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ go_migration.py
 file_path = os.path.abspath(__file__)
 
-# Получение пути к директории, содержащей файл go_migration.py
+# РџРѕР»СѓС‡РµРЅРёРµ РїСѓС‚Рё Рє РґРёСЂРµРєС‚РѕСЂРёРё, СЃРѕРґРµСЂР¶Р°С‰РµР№ С„Р°Р№Р» go_migration.py
 directory = os.path.dirname(file_path)
 
-# Формирование пути к файлу alembic.ini
+# Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ alembic.ini
 config_path = os.path.join(directory, "alembic.ini")
 
-# Проверка существования файла alembic.ini
+# РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ С„Р°Р№Р»Р° alembic.ini
 if not os.path.exists(config_path):
     print(f"Config file '{config_path}' not found")
 else:
-    # Изменение файла параметра script_location = Migration/alembic
+    # РР·РјРµРЅРµРЅРёРµ С„Р°Р№Р»Р° РїР°СЂР°РјРµС‚СЂР° script_location = Migration/alembic
     original_location = db.change_script_location("Migration/alembic")
 
-    # Формирование пути к директории с миграциями
+    # Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїСѓС‚Рё Рє РґРёСЂРµРєС‚РѕСЂРёРё СЃ РјРёРіСЂР°С†РёСЏРјРё
     migration_directory = os.path.join(directory, "alembic", "versions")
 
-    # Загрузка конфигурации Alembic из файла alembic.ini
+    # Р—Р°РіСЂСѓР·РєР° РєРѕРЅС„РёРіСѓСЂР°С†РёРё Alembic РёР· С„Р°Р№Р»Р° alembic.ini
     alembic_config = Config(config_path)
 
-    # Установка пути к директории с миграциями
+    # РЈСЃС‚Р°РЅРѕРІРєР° РїСѓС‚Рё Рє РґРёСЂРµРєС‚РѕСЂРёРё СЃ РјРёРіСЂР°С†РёСЏРјРё
     alembic_config.set_main_option("version_locations", migration_directory)
 
-    # Получение значения поля version_locations
+    # РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РїРѕР»СЏ version_locations
     version_locations = alembic_config.get_main_option("version_locations")
     print(f" version_locations: {version_locations}")
 
-    # Изменение параметра sqlalchemy.url
+    # РР·РјРµРЅРµРЅРёРµ РїР°СЂР°РјРµС‚СЂР° sqlalchemy.url
     original_location = db.change_sqlalchemy_url(f"postgresql://{db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
 
-    # Создание новой миграции
+    # РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РјРёРіСЂР°С†РёРё
     command.revision(alembic_config, autogenerate=True, message="New migration")
 
-    # Применение всех непримененных миграций
+    # РџСЂРёРјРµРЅРµРЅРёРµ РІСЃРµС… РЅРµРїСЂРёРјРµРЅРµРЅРЅС‹С… РјРёРіСЂР°С†РёР№
     command.upgrade(alembic_config, "head")
 
-    # Изменение файла параметра script_location = alembic
+    # РР·РјРµРЅРµРЅРёРµ С„Р°Р№Р»Р° РїР°СЂР°РјРµС‚СЂР° script_location = alembic
     original_location = db.change_script_location("alembic")
