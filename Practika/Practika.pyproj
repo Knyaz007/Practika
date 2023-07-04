@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>ebf8dd96-1959-4989-a54c-008cd36fadaf</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>Migration\go_migration.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,9 +22,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="end_points.py" />
+    <Compile Include="Migration\alembic\env.py" />
+    <Compile Include="Migration\db.py" />
+    <Compile Include="Migration\go_migration.py" />
+    <Compile Include="Migration\sqlalchemy_class.py" />
     <Compile Include="pydantic_class.py" />
     <Compile Include="sqlalchemy_class.py" />
     <Compile Include="main.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migration\" />
+    <Folder Include="Migration\alembic\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Migration\alembic.ini" />
+    <Content Include="Migration\alembic.log" />
+    <Content Include="Migration\alembic\README" />
+    <Content Include="Migration\alembic\script.py.mako" />
+    <Content Include="Migration\database_config.ini" />
+    <Content Include="Migration\Starting_the_migtation.bat.bak" />
+    <Content Include="Migration\Starting_the_server.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
