@@ -1,8 +1,7 @@
 from alembic import command
 from alembic.config import Config
-from configparser import ConfigParser
+
 import os
-import shutil
 import db
 
 # Получение абсолютного пути к файлу go_migration.py

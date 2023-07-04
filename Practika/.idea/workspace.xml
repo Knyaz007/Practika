@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="CUSTOM_SCOPE_NAME" value="All Places" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="205616b7-aee8-4f33-b73b-db2410801ebf" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,6 +20,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/Adminchik/Desktop/Practika",
@@ -32,6 +36,7 @@
       <option name="presentableId" value="Default" />
       <updated>1688058540377</updated>
       <workItem from="1688058541362" duration="11000" />
+      <workItem from="1688402946966" duration="52000" />
     </task>
     <servers />
   </component>
