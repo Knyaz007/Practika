@@ -21,7 +21,7 @@ else:
     script_location = os.path.join(directory, "alembic")
 
     # Изменение файла параметра script_location = Migration/alembic
-    #original_location = db.change_script_location("Migration/alembic")
+    # original_location = db.change_script_location("Migration/alembic")
 
     # Формирование пути к директории с миграциями
     migration_directory = os.path.join(directory, "alembic", "versions")
@@ -39,12 +39,12 @@ else:
     version_locations = alembic_config.get_main_option("version_locations")
     print(f" version_locations: {version_locations}")
 
-     # Получение значения поля script_location
+    # Получение значения поля script_location
     script_location = alembic_config.get_main_option("script_location")
     print(f" version_locations: {script_location}")
 
-    ## Изменение параметра sqlalchemy.url
-    #original_location = db.change_sqlalchemy_url(f"postgresql://{db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
+    # # Изменение параметра sqlalchemy.url original_location = db.change_sqlalchemy_url(f"postgresql://{
+    # db.username}:{db.password}@{db.host}:{db.port}/{db.database}")
 
     # Создание новой миграции
     command.revision(alembic_config, autogenerate=True, message="New migration")

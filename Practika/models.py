@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Date, ForeignKey,Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Text, Date, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from typing import List, Optional
@@ -48,8 +48,7 @@ class Task(Base):
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.user_id"))
     created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    #completed : Mapped[bool] = Column(Boolean, default=False) 
-
+    completed: Mapped[bool] = Column(Boolean, default=False)
 
     user: Mapped[Optional[User]] = relationship("User", back_populates="tasks")
     group_task: Mapped[Optional[GroupTask]] = relationship("GroupTask", back_populates="tasks")

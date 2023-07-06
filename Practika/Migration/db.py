@@ -4,7 +4,7 @@ from alembic import context
 import configparser
 import models
 import shutil
-asas= 123
+
 # Get the current module's file path
 module_path = os.path.abspath(__file__)
 

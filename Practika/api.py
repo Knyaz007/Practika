@@ -2,17 +2,19 @@ from fastapi import FastAPI
 from typing import Dict
 
 from fastapi.openapi.utils import get_openapi
-from sqlalchemy import create_engine#
-from sqlalchemy.orm import sessionmaker#
+from sqlalchemy import create_engine  #
+from sqlalchemy.orm import sessionmaker  #
 from migration import db
 import models
+
+import json
+from typing import List, Dict, Union
+from datetime import datetime
 
 User = models.User
 GroupTask = models.GroupTask
 Comment = models.Comment
 Task = models.Task
-
-ndd=db.asas
 
 # Создаем соединение с базой данных
 engine = create_engine(db.original_location)
@@ -20,6 +22,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 app = FastAPI()
+
 
 # Определите свои пути и операции здесь
 
@@ -36,23 +39,24 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+
 # Маршрут для получения Swagger-схемы
 @app.get("/openapi.json")
 async def get_openapi_endpoint():
     return custom_openapi()
 
+
 # -------------------------------------------- Пользователи (Users) --------------------------------------------
-import json
-from typing import List, Dict, Union
-from datetime import datetime
+
+
 @app.get("/users", tags=["Users"])
 def get_users() -> List[Dict[str, Union[int, str, datetime]]]:
     users = session.query(User).all()
-    users_data = [{"id": user.user_id, "name": user.name, "created_at" : user.created_at.strftime("%Y-%m-%d %H:%M:%S") } for user in users]
+    users_data = [{"id": user.user_id, "name": user.name, "created_at": user.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for user in users]
     return users_data
 
 
- 
 @app.get("/users/{user_id}", tags=["Users"])
 def get_user(user_id: int) -> Dict[str, Union[int, str, datetime]]:
     """
@@ -67,9 +71,6 @@ def get_user(user_id: int) -> Dict[str, Union[int, str, datetime]]:
         return user_data
     else:
         return {"message": "User not found"}
-
-
-
 
 
 @app.post("/users", tags=["Users"])
@@ -102,7 +103,6 @@ async def delete_user(user_id: int) -> Dict[str, str]:
     return {"message": f"Delete user {user_id}"}
 
 
-
 @app.get("/users/{user_id}/tasks", tags=["Users"])
 def get_user_tasks(user_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     """
@@ -112,11 +112,11 @@ def get_user_tasks(user_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     - user_id (int): The ID of the user.
     """
     tasks = session.query(Task).filter(Task.user_id == user_id).all()
-    tasks_data = [{"id": task.task_id, "title": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for task in tasks]
+    tasks_data = [{"id": task.task_id, "title": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for task in tasks]
     return tasks_data
 
 
- 
 @app.get("/users/{user_id}/group_tasks", tags=["Users"])
 def get_user_group_tasks(user_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     """
@@ -126,10 +126,11 @@ def get_user_group_tasks(user_id: int) -> List[Dict[str, Union[int, str, datetim
     - user_id (int): The ID of the user.
     """
     group_tasks = session.query(GroupTask).join(Task).filter(Task.user_id == user_id).all()
-    group_tasks_data = [{"id": group_task.group_task_id, "title": group_task.name, "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for group_task in group_tasks]
+    group_tasks_data = [{"id": group_task.group_task_id, "title": group_task.name,
+                         "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for group_task in
+                        group_tasks]
     return group_tasks_data
 
- 
 
 @app.get("/users/{user_id}/comments", tags=["Users"])
 def get_user_comments(user_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
@@ -140,8 +141,11 @@ def get_user_comments(user_id: int) -> List[Dict[str, Union[int, str, datetime]]
     - user_id (int): The ID of the user.
     """
     comments = session.query(Comment).filter(Comment.user_id == user_id).all()
-    comments_data = [{"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for comment in comments]
+    comments_data = [
+        {"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for
+        comment in comments]
     return comments_data
+
 
 # ------------------------------------  Группы задач (GroupTask) ---------------------------------------
 @app.get("/group_tasks", tags=["GroupTask"])
@@ -150,7 +154,9 @@ def get_group_tasks() -> List[Dict[str, Union[int, str, datetime]]]:
     Get all group tasks.
     """
     group_tasks = session.query(GroupTask).all()
-    group_tasks_data = [{"id": group_task.group_task_id, "description": group_task.description, "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for group_task in group_tasks]
+    group_tasks_data = [{"id": group_task.group_task_id, "description": group_task.description,
+                         "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for group_task in
+                        group_tasks]
     return group_tasks_data
 
 
@@ -164,10 +170,12 @@ def get_group_task(group_task_id: int) -> Dict[str, Union[int, str, datetime]]:
     """
     group_task = session.query(GroupTask).filter(GroupTask.group_task_id == group_task_id).first()
     if group_task:
-        group_task_data = {"id": group_task.group_task_id, "name": group_task.name, "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+        group_task_data = {"id": group_task.group_task_id, "name": group_task.name,
+                           "created_at": group_task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
         return group_task_data
     else:
         return {"message": "Group task not found"}
+
 
 @app.post("/group_tasks", tags=["GroupTask"])
 async def create_group_task() -> Dict[str, str]:
@@ -199,7 +207,6 @@ async def delete_group_task(group_task_id: int) -> Dict[str, str]:
     return {"message": f"Delete group task {group_task_id}"}
 
 
- 
 @app.get("/group_tasks/{group_task_id}/tasks", tags=["GroupTask"])
 def get_group_tasks_tasks(group_task_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     """
@@ -209,8 +216,10 @@ def get_group_tasks_tasks(group_task_id: int) -> List[Dict[str, Union[int, str, 
     - group_task_id (int): The ID of the group task.
     """
     tasks = session.query(Task).filter(Task.group_task_id == group_task_id).all()
-    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for task in tasks]
+    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for task in tasks]
     return tasks_data
+
 
 # Задачи (Task)
 @app.get("/tasks", tags=["Task"])
@@ -219,11 +228,11 @@ def get_tasks() -> List[Dict[str, Union[int, str, datetime]]]:
     Get all tasks.
     """
     tasks = session.query(Task).all()
-    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for task in tasks]
+    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for task in tasks]
     return tasks_data
 
 
- 
 @app.get("/tasks/{task_id}", tags=["Task"])
 def get_task(task_id: int) -> Dict[str, Union[int, str, datetime]]:
     """
@@ -234,10 +243,12 @@ def get_task(task_id: int) -> Dict[str, Union[int, str, datetime]]:
     """
     task = session.query(Task).filter(Task.task_id == task_id).first()
     if task:
-        task_data = {"id": task.task_id, "title": task.title, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+        task_data = {"id": task.task_id, "title": task.title,
+                     "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
         return task_data
     else:
         return {"message": "Task not found"}
+
 
 @app.post("/tasks", tags=["Task"])
 async def create_task() -> Dict[str, str]:
@@ -268,7 +279,7 @@ async def delete_task(task_id: int) -> Dict[str, str]:
     """
     return {"message": f"Delete task {task_id}"}
 
- 
+
 @app.get("/tasks/{task_id}/user", tags=["Task"])
 def get_task_users(task_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     """
@@ -278,10 +289,12 @@ def get_task_users(task_id: int) -> List[Dict[str, Union[int, str, datetime]]]:
     - task_id (int): The ID of the task.
     """
     users = session.query(User).join(Task).filter(Task.task_id == task_id).all()
-    users_data = [{"id": user.user_id, "name": user.name, "created_at": user.created_at.strftime("%Y-%m-%d %H:%M:%S")} for user in users]
+    users_data = [{"id": user.user_id, "name": user.name, "created_at": user.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for user in users]
     return users_data
 
-#--------------------------------------------- Комментарии (Comments) --------------------------------------------
+
+# --------------------------------------------- Комментарии (Comments) --------------------------------------------
 
 @app.get("/comments", tags=["Comments"])
 def get_comments() -> List[Dict[str, Union[int, str, datetime]]]:
@@ -289,8 +302,11 @@ def get_comments() -> List[Dict[str, Union[int, str, datetime]]]:
     Get all comments.
     """
     comments = session.query(Comment).all()
-    comments_data = [{"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for comment in comments]
+    comments_data = [
+        {"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for
+        comment in comments]
     return comments_data
+
 
 @app.get("/comments/{comment_id}", tags=["Comments"])
 def get_comment(comment_id: int) -> Dict[str, str]:
@@ -299,16 +315,14 @@ def get_comment(comment_id: int) -> Dict[str, str]:
 
     Parameters:
     - comment_id (int): The ID of the comment.
-    """     
+    """
     comments = session.query(Comment).filter(Task.task_id == comment_id).first()
     if comments:
-        task_data = {"id": comments.com_id, "text": comments.text, "created_at": comments.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+        task_data = {"id": comments.com_id, "text": comments.text,
+                     "created_at": comments.created_at.strftime("%Y-%m-%d %H:%M:%S")}
         return task_data
     else:
         return {"message": "Task not found"}
-
-
-    return {"message": f"Get comment {comment_id} (text = {comments_data})"}
 
 
 @app.post("/comments", tags=["Comments"])
@@ -329,6 +343,7 @@ async def delete_comment(comment_id: int) -> Dict[str, str]:
     """
     return {"message": f"Delete comment {comment_id}"}
 
+
 # ------------------------  Группы задач и их связи с задачами и комментариями  -------------------------------------
 
 @app.get("/group_tasks/tasks", tags=["GroupTask"])
@@ -337,7 +352,8 @@ def get_group_tasks_tasks() -> List[Dict[str, Union[int, str, datetime]]]:
     Get all tasks from all group tasks.
     """
     tasks = session.query(Task).all()
-    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")} for task in tasks]
+    tasks_data = [{"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+                  for task in tasks]
     return tasks_data
 
 
@@ -350,11 +366,12 @@ async def get_group_task_task(group_task_id: int, task_id: int) -> Dict[str, Uni
     - group_task_id (int): The ID of the group task.
     - task_id (int): The ID of the task.
     """
-    
+
     task = session.query(Task).filter_by(group_task_id=group_task_id, task_id=task_id).first()
     if task:
-        task_data = task = {"id": task.task_id, "name": task.name, "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
-        return task_data
+        task = {"id": task.task_id, "name": task.name,
+                "created_at": task.created_at.strftime("%Y-%m-%d %H:%M:%S")}
+        return task
     else:
         return {"message": "Task not found"}
 
@@ -369,5 +386,7 @@ async def get_group_task_task_comments(group_task_id: int, task_id: int) -> List
     - task_id (int): The ID of the task.
     """
     comments = session.query(Comment).filter(Comment.task_id == task_id).all()
-    comments_data = [{"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for comment in comments]
+    comments_data = [
+        {"id": comment.com_id, "text": comment.text, "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S")} for
+        comment in comments]
     return comments_data
