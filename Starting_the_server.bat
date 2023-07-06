@@ -1,1 +1,1 @@
-python Practika\main.py
+python Practika\main.py 
