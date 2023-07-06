@@ -1,7 +1,17 @@
-.\venv\Scripts\activate    
+cd.. 
+cd..
 
+
+rem Установка зависимостей (если нужно)
+poetry install
+
+rem Вывод информации о виртуальной среде
+poetry env info
+
+rem Обновление зависимостей (если нужно)
 poetry update
 
-python go_migration.py
+rem Запуск модуля
+python Practika\Migration\go_migration.py
 
 pause
