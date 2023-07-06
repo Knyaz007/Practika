@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "PractikaEVN"
+name = "githubpractika6semestr"
 version = "0.1.0"
 description = ""
 authors = ["Vladimir"]
@@ -13,10 +13,11 @@ uvicorn = "^0.22.0"
 flake8 = "^6.0.0"
 pytest = "^7.4.0"
 alembic = "^1.11.1"
-psycopg2 = "^2.9.6"
 configparser = "^5.3.0"
 fileconfig = "^0.6.1"
 pool = "^0.1.2.dev0"
+psycopg2 = "^2.9.6"
+boolean = "^1.1.0"
 
 
 [build-system]

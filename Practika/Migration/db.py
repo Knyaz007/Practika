@@ -2,7 +2,7 @@
 import os
 from alembic import context
 import configparser
-import sqlalchemy_class
+import models
 import shutil
 
 # Get the current module's file path
@@ -73,10 +73,10 @@ host = database_config["host"]
 port = database_config["port"]
 database = database_config["database"]
 
+original_location = f"postgresql://{username}:{password}@{host}:{port}/{database}"
+change_sqlalchemy_url(original_location)
 
-original_location = change_sqlalchemy_url(f"postgresql://{username}:{password}@{host}:{port}/{database}")
-
-Base = sqlalchemy_class.Base
+Base = models.Base
 metadata = Base.metadata
 
 

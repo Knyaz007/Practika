@@ -7,6 +7,8 @@ class User(BaseModel):
     name: str
     email: str
     password: str
+    created_at: datetime
+    update_at: datetime
 
 
 class GroupTask(BaseModel):
@@ -14,6 +16,8 @@ class GroupTask(BaseModel):
     name: str
     description: str
     user_id: int
+    created_at: datetime
+    update_at: datetime
 
 
 class Task(BaseModel):
@@ -23,9 +27,14 @@ class Task(BaseModel):
     period_ofexecution: datetime
     group_task_id: int
     user_id: int
+    created_at: datetime
+    update_at: datetime
 
 
 class Comment(BaseModel):
     com_id: int
     text: str
     task_id: int
+    created_at: datetime
+    update_at: datetime
+    user_id: int
