@@ -1,3 +1,4 @@
+# -*- coding: windows-1251 -*-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -25,7 +26,7 @@ def test_get_user_id():
         {"id": 1, "name": "vvv", "created_at": "1997-02-12 00:00:00"},
 
     ]
-    # Рeшил просто вывести что нету польщователя нежели проверять его с моим 
+    # Рeшил пока вывести что нету пользователя нежели проверять его с моим 
     if not users_data:
         assert False, "User not found"
 
