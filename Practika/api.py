@@ -1,20 +1,27 @@
+# -*- coding: windows-1251 -*-
 from fastapi import FastAPI
-from typing import Dict
+
 
 from fastapi.openapi.utils import get_openapi
-from sqlalchemy import create_engine  #
-from sqlalchemy.orm import sessionmaker  #
+from sqlalchemy import create_engine  
+from sqlalchemy.orm import sessionmaker  
 from migration import db
+import schemas
 import models
 
-import json
 from typing import List, Dict, Union
 from datetime import datetime
 
-User = models.User
-GroupTask = models.GroupTask
-Comment = models.Comment
-Task = models.Task
+DBUser = models.User
+DBGroupTask = models.GroupTask
+DBComment = models.Comment
+DBTask = models.Task
+
+User = schemas.User
+GroupTask = schemas.GroupTask
+Comment = schemas.Comment
+Task = schemas.Task
+
 
 # Создаем соединение с базой данных
 engine = create_engine(db.original_location)
@@ -22,6 +29,20 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 app = FastAPI()
+
+from contextlib import contextmanager
+@contextmanager
+def session_scope(Session):
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
 
 
 # Определите свои пути и операции здесь
@@ -46,31 +67,58 @@ async def get_openapi_endpoint():
     return custom_openapi()
 
 
+from fastapi import HTTPException
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(HTTPException)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "error": "Validation Error"}
+    )
+
+
 # -------------------------------------------- Пользователи (Users) --------------------------------------------
+from fastapi import Path
 
-
-@app.get("/users", tags=["Users"])
-def get_users() -> List[Dict[str, Union[int, str, datetime]]]:
-    users = session.query(User).all()
-    users_data = [{"id": user.user_id, "name": user.name, "created_at": user.created_at.strftime("%Y-%m-%d %H:%M:%S")}
-                  for user in users]
-    return users_data
-
+# Определяем маршрут для получения пользователей
+# Определяем маршрут для получения пользователей
+@app.get("/users", tags=["Users"], response_model=List[User])
+def get_users() -> List[User]:
+    with session_scope(Session) as session:
+        db_users = session.query(DBUser).all()
+        users_data: List[User] = [
+            User(
+                user_id=db_user.user_id,
+                name=db_user.name,
+                email=db_user.email,
+                password=db_user.password,
+                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            for db_user in db_users
+        ]
+        return users_data
 
 @app.get("/users/{user_id}", tags=["Users"])
-def get_user(user_id: int) -> Dict[str, Union[int, str, datetime]]:
+def get_user(user_id: int = Path(..., description="The ID of the user")) -> User:
     """
     Get a specific user by user_id.
-
-    Parameters:
-    - user_id (int): The ID of the user.
     """
-    user = session.query(User).filter(User.user_id == user_id).first()
-    if user:
-        user_data = {"id": user.user_id, "name": user.name, "created_at": user.created_at.strftime("%Y-%m-%d %H:%M:%S")}
-        return user_data
-    else:
-        return {"message": "User not found"}
+    with session_scope(Session) as session:
+       db_user = session.query(DBUser).filter(DBUser.user_id == user_id).first()
+       if db_user:
+           user_data = User(
+                user_id=db_user.user_id,
+                name=db_user.name,
+                email=db_user.email,
+                password=db_user.password,
+                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+            )
+           return user_data
+       else:
+           raise HTTPException(status_code=404, detail="User not found")
 
 
 @app.post("/users", tags=["Users"])
