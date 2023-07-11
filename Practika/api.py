@@ -9,6 +9,7 @@ from migration import db
 import schemas
 import models
 
+from  api_get import *
 from typing import List, Dict, Union
 from datetime import datetime
 
@@ -67,62 +68,56 @@ async def get_openapi_endpoint():
     return custom_openapi()
 
 
-from fastapi import HTTPException
-from fastapi.responses import JSONResponse
-
-@app.exception_handler(HTTPException)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.detail, "error": "Validation Error"}
-    )
-
+from fastapi import Path
+ 
 
 # -------------------------------------------- Пользователи (Users) --------------------------------------------
-from fastapi import Path
 
-# Определяем маршрут для получения пользователей
-# Определяем маршрут для получения пользователей
-@app.get("/users", tags=["Users"], response_model=List[User])
-def get_users() -> List[User]:
-    with session_scope(Session) as session:
-        db_users = session.query(DBUser).all()
-        users_data: List[User] = [
-            User(
-                user_id=db_user.user_id,
-                name=db_user.name,
-                email=db_user.email,
-                password=db_user.password,
-                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
-            )
-            for db_user in db_users
-        ]
-        return users_data
 
-@app.get("/users/{user_id}", tags=["Users"])
-def get_user(user_id: int = Path(..., description="The ID of the user")) -> User:
-    """
-    Get a specific user by user_id.
-    """
-    with session_scope(Session) as session:
-       db_user = session.query(DBUser).filter(DBUser.user_id == user_id).first()
-       if db_user:
-           user_data = User(
-                user_id=db_user.user_id,
-                name=db_user.name,
-                email=db_user.email,
-                password=db_user.password,
-                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
-            )
-           return user_data
-       else:
-           raise HTTPException(status_code=404, detail="User not found")
+## Определяем маршрут для получения пользователей
+#@app.get("/users", tags=["Users"], response_model=List[User])
+#def get_users() -> List[User]:
+#    with session_scope(Session) as session:
+#        db_users = session.query(DBUser).all()
+#        users_data: list[User] = [
+#            User(
+#                user_id=db_user.user_id,
+#                name=db_user.name,
+#                email=db_user.email,
+#                password=db_user.password,
+#                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+#                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+#            )
+#            for db_user in db_users
+#        ]
+#        return users_data
+ 
+
+
+#@app.get("/users/{user_id}", tags=["Users"])
+#def get_user(user_id: int = Path(..., description="The ID of the user")) -> User:
+#    """
+#    Get a specific user by user_id.
+     
+#    """
+#    with session_scope(Session) as session:
+#       db_user = session.query(DBUser).filter(DBUser.user_id == user_id).first()
+#       if db_user:
+#           user_data = User(
+#                user_id=db_user.user_id,
+#                name=db_user.name,
+#                email=db_user.email,
+#                password=db_user.password,
+#                created_at=db_user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+#                update_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+#            )
+#           return user_data
+#       else:
+#           return {"message": "User not found"}
 
 
 @app.post("/users", tags=["Users"])
-async def create_user() -> Dict[str, str]:
+async def create_user():
     """
     Create a new user.
     """
