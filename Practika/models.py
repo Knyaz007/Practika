@@ -43,7 +43,7 @@ class Task(Base):
     task_id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = Column(String(255))
     iv_priority: Mapped[Optional[int]] = Column(Integer)
-    period_ofexecution: Mapped[Optional[Date]] = Column(Date)
+    period_ofexecution: Mapped[Optional[datetime]] = Column(DateTime)
     group_task_id: Mapped[int] = Column(Integer, ForeignKey("group_tasks.group_task_id"))
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.user_id"))
     created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
