@@ -3,6 +3,7 @@ from fastapi import FastAPI, Path
 from fastapi.openapi.utils import get_openapi
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from contextlib import contextmanager
 from migration import db
 import schemas
 import models
@@ -25,9 +26,6 @@ Session = sessionmaker(bind=engine)
 
 
 app = FastAPI()
-
-
-from contextlib import contextmanager
 
 
 @contextmanager
