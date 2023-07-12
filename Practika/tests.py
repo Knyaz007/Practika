@@ -165,7 +165,7 @@ test_get_comment_id()
 # ------------------------  Группы задач и их связи с задачами и комментариями  -------------------------------------
 
 def test_get_group_tasks_tasks():
-    response = client.get("/group_tasks/tasks")
+    response = client.get("/group_tasks/tasks/")
     group_tasks = response.json()
     assert response.status_code == 200, "status code is not 200"
     if not group_tasks:
@@ -195,5 +195,3 @@ def get_group_task_group_task_id_task_task_id_comments():
 
 
 get_group_task_group_task_id_task_task_id_comments()
-
-

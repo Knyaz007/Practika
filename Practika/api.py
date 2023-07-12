@@ -7,8 +7,8 @@ from contextlib import contextmanager
 from migration import db
 import schemas
 import models
-from typing import List, Dict, Union
-from datetime import datetime
+from typing import List, Dict
+
 
 DBUser = models.User
 DBGroupTask = models.GroupTask
