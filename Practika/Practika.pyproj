@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>ebf8dd96-1959-4989-a54c-008cd36fadaf</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>migration\go_migration.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="api_gelete.py" />
     <Compile Include="api_get.py" />
     <Compile Include="api.py" />
     <Compile Include="Migration\alembic\env.py" />

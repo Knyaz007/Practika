@@ -11,6 +11,14 @@ class User(BaseModel):
     updated_at: datetime
 
 
+class NewUser(BaseModel):   
+    name: str
+    email: str
+    password: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class GroupTask(BaseModel):
     group_task_id: int
     name: str
