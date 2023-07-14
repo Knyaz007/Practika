@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Date, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from typing import List, Optional
@@ -18,9 +18,9 @@ class User(Base):
     created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    group_tasks: Mapped[List["GroupTask"]] = relationship("GroupTask", back_populates="user")
-    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="user")
-    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="user")
+    group_tasks: Mapped[List["GroupTask"]] = relationship("GroupTask", back_populates="user", cascade="delete")
+    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="user", cascade="delete")
+    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="user", cascade="delete")
 
 
 class GroupTask(Base):
@@ -34,7 +34,7 @@ class GroupTask(Base):
     updated_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user: Mapped[Optional[User]] = relationship("User", back_populates="group_tasks")
-    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="group_task")
+    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="group_task", cascade="delete")
 
 
 class Task(Base):
@@ -52,7 +52,7 @@ class Task(Base):
 
     user: Mapped[Optional[User]] = relationship("User", back_populates="tasks")
     group_task: Mapped[Optional[GroupTask]] = relationship("GroupTask", back_populates="tasks")
-    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="task")
+    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="task", cascade="delete")
 
 
 class Comment(Base):

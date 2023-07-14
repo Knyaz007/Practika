@@ -1,4 +1,3 @@
-# -*- coding: windows-1251 -*-
 from fastapi import FastAPI, Path
 from fastapi.openapi.utils import get_openapi
 from sqlalchemy import create_engine
@@ -8,6 +7,8 @@ from migration import db
 import schemas
 import models
 from typing import List, Dict
+from datetime import datetime
+from fastapi import HTTPException
 
 
 DBUser = models.User
@@ -16,9 +17,13 @@ DBComment = models.Comment
 DBTask = models.Task
 
 User = schemas.User
+NewUser = schemas.NewUser
 GroupTask = schemas.GroupTask
+NewGroupTask = schemas.NewGroupTask
 Comment = schemas.Comment
+NewComment = schemas.NewComment
 Task = schemas.Task
+NewTask = schemas.NewTask
 
 # Создаем соединение с базой данных
 engine = create_engine(db.original_location)
@@ -85,7 +90,7 @@ def get_users() -> List[User]:
 @app.get("/users/{user_id}", tags=["Users"], response_model=User)
 def get_user(user_id: int = Path(..., description="The ID of the user")) -> User:
     """
-    Get tasks for a specific user by user_id.
+    Get  user by user_id.
     """
     with session_scope(Session) as session:
         db_user = session.query(DBUser).filter(DBUser.user_id == user_id).first()
@@ -99,36 +104,82 @@ def get_user(user_id: int = Path(..., description="The ID of the user")) -> User
                 updated_at=db_user.updated_at.strftime("%Y-%m-%d %H:%M:%S")
             )
             return user_data
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
 
 
 @app.post("/users", tags=["Users"])
-async def create_user():
+async def create_user(user_data: NewUser):
     """
     Create a new user.
     """
-    return {"message": "Create a new user"}
+    with session_scope(Session) as session:
+        try:
+            # Создаем экземпляр DBUser на основе полученных данных
+            db_user = DBUser(
+                name=user_data.name,
+                email=user_data.email,
+                password=user_data.password,
+                created_at= datetime.utcnow(),
+                updated_at= datetime.utcnow()
+            )
+
+            # Сохраняем пользователя в базе данных
+            session.add(db_user)
+            session.commit()
+
+            # Возвращаем сообщение об успешном создании пользователя
+            return {"message": "User created successfully"}
+
+        except Exception as e:
+            # В случае возникновения исключения, возвращаем сообщение об ошибке
+            return {"error": str(e)}
 
 
-@app.put("/users/{user_id}", tags=["Users"])
-async def update_user(user_id: int) -> Dict[str, str]:
+@app.put("/users", tags=["Users"])
+async def update_user(user_data: User ):
     """
-    Update a user by user_id.
-
-    Parameters:
-    - user_id (int): The ID of the user.
+    Update a user.
     """
-    return {"message": f"Update user {user_id}"}
+    with session_scope(Session) as session:
+        db_user = session.query(DBUser).filter(DBUser.user_id == user_data.user_id).first()
+        # Проверяем, существует ли пользователь
+        if db_user:
+            # Обновляем данные пользователя
+            db_user.name = user_data.name
+            db_user.email = user_data.email
+            db_user.password = user_data.password
+            db_user.updated_at = datetime.utcnow()
+
+            # Сохраняем изменения
+            session.commit()
+
+            # Возвращаем сообщение об успешном обновлении пользователя
+            return {"message": f"User {user_data.user_id} updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
 
 
 @app.delete("/users/{user_id}", tags=["Users"])
-async def delete_user(user_id: int) -> Dict[str, str]:
+async def delete_user(user_id: int = Path(..., description="The ID of the user")) -> Dict[str, str]:
     """
     Delete a user by user_id.
-
-    Parameters:
-    - user_id (int): The ID of the user.
     """
-    return {"message": f"Delete user {user_id}"}
+    with session_scope(Session) as session:
+        # Находим пользователя по идентификатору
+        user = session.query(DBUser).filter(DBUser.user_id == user_id).first()
+
+        # Проверяем, существует ли пользователь
+        if user:
+            # Удаляем пользователя
+            session.delete(user)
+            session.commit()
+
+            return {"message": f"Delete user {user_id}"}
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
+     
+   
 
 
 @app.get("/users/{user_id}/tasks", tags=["Users"], response_model=List[Task])
@@ -200,6 +251,9 @@ def get_user_comments(user_id: int = Path(..., description="The ID of the user")
             return comments_data
 
 
+#-----------------------------------------------------GroupTask----------------------------------------------
+
+
 @app.get("/group_tasks", tags=["GroupTask"], response_model=List[GroupTask])
 def get_group_tasks() -> List[GroupTask]:
     """
@@ -244,33 +298,76 @@ def get_group_task(group_task_id: int = Path(..., description="The ID of the Gro
 
 
 @app.post("/group_tasks", tags=["GroupTask"])
-async def create_group_task() -> Dict[str, str]:
+async def create_group_task(group_task_data: NewGroupTask):
     """
     Create a new group task.
     """
-    return {"message": "Create a new group task"}
+    with session_scope(Session) as session:
+        try:
+            # Создаем экземпляр DBGroupTask на основе полученных данных
+            db_group_task = DBGroupTask(
+                name=group_task_data.name,
+                description=group_task_data.description,
+                user_id=group_task_data.user_id,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
+            )
+
+            # Сохраняем группу задач в базе данных
+            session.add(db_group_task)
+            session.commit()
+
+            # Возвращаем сообщение об успешном создании группы задач
+            return {"message": "Group task created successfully"}
+
+        except Exception as e:
+            # В случае возникновения исключения, возвращаем сообщение об ошибке
+            return {"error": str(e)}
 
 
-@app.put("/group_tasks/{group_task_id}", tags=["GroupTask"])
-async def update_group_task(group_task_id: int) -> Dict[str, str]:
+@app.put("/group_tasks", tags=["GroupTask"])
+async def update_group_task(group_task_data: GroupTask ):
     """
-    Update a group task by group_task_id.
-
-    Parameters:
-    - group_task_id (int): The ID of the group task.
+    Update a group task.
     """
-    return {"message": f"Update group task {group_task_id}"}
+    with session_scope(Session) as session:
+        db_group_task = session.query(DBGroupTask).filter(DBGroupTask.group_task_id == group_task_data.group_task_id).first()
+        # Проверяем, существует ли группа задач
+        if db_group_task:
+            # Обновляем данные группы задач
+            db_group_task.name = group_task_data.name
+            db_group_task.description = group_task_data.description
+            db_group_task.user_id = group_task_data.user_id
+            db_group_task.updated_at = datetime.utcnow()
+
+            # Сохраняем изменения
+            session.commit()
+
+            # Возвращаем сообщение об успешном обновлении группы задач
+            return {"message": f"Group task {GroupTask.group_task_id} updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Group task not found")
 
 
 @app.delete("/group_tasks/{group_task_id}", tags=["GroupTask"])
-async def delete_group_task(group_task_id: int) -> Dict[str, str]:
+async def delete_group_task(group_task_id: int = Path(..., description="The ID of the Group tasks")):
     """
     Delete a group task by group_task_id.
-
-    Parameters:
-    - group_task_id (int): The ID of the group task.
     """
-    return {"message": f"Delete group task {group_task_id}"}
+    with session_scope(Session) as session:
+        # Находим группу задач по идентификатору
+        group_task = session.query(DBGroupTask).filter(DBGroupTask.group_task_id == group_task_id).first()
+
+        # Проверяем, существует ли группа задач
+        if group_task:
+            # Удаляем группу задач
+            session.delete(group_task)
+            session.commit()
+
+            return {"message": f"Delete group task {group_task_id}"}
+        else:
+            raise HTTPException(status_code=404, detail="Group task not found")
+
 
 
 @app.get("/group_tasks/{group_task_id}/tasks", tags=["GroupTask"], response_model=List[Task])
@@ -295,6 +392,9 @@ def get_group_tasks_tasks(group_task_id: int = Path(..., description="The ID of 
                 for task in tasks
             ]
             return tasks_data
+
+
+#-----------------------------------------------------Task----------------------------------------------
 
 
 @app.get("/tasks", tags=["Task"], response_model=List[Task])
@@ -347,33 +447,81 @@ def get_task(task_id: int = Path(..., description="The ID of the task")) -> Task
 
 
 @app.post("/tasks", tags=["Task"])
-async def create_task() -> Dict[str, str]:
+async def create_task(task_data: NewTask):
     """
     Create a new task.
     """
-    return {"message": "Create a new task"}
+    with session_scope(Session) as session:
+        try:
+            # Create an instance of DBTask based on the received data
+            db_task = DBTask(
+                name=task_data.name,
+                iv_priority=task_data.iv_priority,
+                period_ofexecution=task_data.period_ofexecution,
+                group_task_id=task_data.group_task_id,
+                user_id=task_data.user_id,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+                completed=False
+            )
+
+            # Save the task to the database
+            session.add(db_task)
+            session.commit()
+
+            # Return a success message
+            return {"message": "Task created successfully"}
+
+        except Exception as e:
+            # In case of an exception, return an error message
+            return {"error": str(e)}
 
 
-@app.put("/tasks/{task_id}", tags=["Task"])
-async def update_task(task_id: int) -> Dict[str, str]:
+@app.put("/tasks", tags=["Task"])
+async def update_task(task_data: Task):
     """
     Update a task by task_id.
-
-    Parameters:
-    - task_id (int): The ID of the task.
     """
-    return {"message": f"Update task {task_id}"}
+    with session_scope(Session) as session:
+        db_task = session.query(DBTask).filter(DBTask.task_id == Task.task_id).first()
+        # Check if the task exists
+        if db_task:
+            # Update the task data
+            db_task.name = task_data.name
+            db_task.iv_priority = task_data.iv_priority
+            db_task.period_ofexecution = task_data.period_ofexecution
+            db_task.group_task_id = task_data.group_task_id
+            db_task.user_id = task_data.user_id
+            db_task.updated_at = datetime.utcnow()
+
+            # Save the changes
+            session.commit()
+
+            # Return a success message
+            return {"message": f"Task {Task.task_id} updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Task not found")
 
 
-@app.delete("/tasks/{task_id}", tags=["Task"])
-async def delete_task(task_id: int) -> Dict[str, str]:
+@app.delete("/tasks", tags=["Task"])
+async def delete_task(task_id: int):
     """
     Delete a task by task_id.
-
-    Parameters:
-    - task_id (int): The ID of the task.
     """
+    with session_scope(Session) as session:
+        # Find the task by its ID
+        task = session.query(DBTask).filter(DBTask.task_id == task_id).first()
+
+        # Check if the task exists
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        # Delete the task
+        session.delete(task)
+        session.commit()
+
     return {"message": f"Delete task {task_id}"}
+
 
 
 @app.get("/tasks/{task_id}/user", tags=["Task"], response_model=List[User])
@@ -444,22 +592,75 @@ def get_comment(comment_id: int = Path(..., description="The ID of comment")) ->
 
 
 @app.post("/comments", tags=["Comments"])
-async def create_comment() -> Dict[str, str]:
+async def create_comment(comment_data: NewComment):
     """
     Create a new comment.
     """
-    return {"message": "Create a new comment"}
+    with session_scope(Session) as session:
+        try:
+            # Create an instance of DBComment based on the received data
+            db_comment = DBComment(
+                text=comment_data.text,
+                task_id=comment_data.task_id,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
+            )
+
+            # Save the comment to the database
+            session.add(db_comment)
+            session.commit()
+
+            # Return a success message
+            return {"message": "Comment created successfully"}
+
+        except Exception as e:
+            # In case of an exception, return an error message
+            return {"error": str(e)}
 
 
 @app.delete("/comments/{comment_id}", tags=["Comments"])
-async def delete_comment(comment_id: int) -> Dict[str, str]:
+async def delete_comment(comment_id: int):
     """
     Delete a comment by comment_id.
 
     Parameters:
     - comment_id (int): The ID of the comment.
     """
-    return {"message": f"Delete comment {comment_id}"}
+    with session_scope(Session) as session:
+        # Find the comment by its ID
+        comment = session.query(DBComment).filter(DBComment.com_id == comment_id).first()
+
+        # Check if the comment exists
+        if not comment:
+            raise HTTPException(status_code=404, detail="Comment not found")
+
+        # Delete the comment
+        session.delete(comment)
+        session.commit()
+
+    return {"message": f"Comment {comment_id} deleted successfully"}
+
+
+@app.put("/comments", tags=["Comments"])
+async def update_comment(comment_data: Comment):
+    """
+    Update a comment.
+    """
+    with session_scope(Session) as session:
+        db_comment = session.query(DBComment).filter(DBComment.com_id == Comment.comment_id).first()
+        # Check if the comment exists
+        if db_comment:
+            # Update the comment data
+            db_comment.text = comment_data.text
+            db_comment.updated_at = datetime.utcnow()
+
+            # Save the changes
+            session.commit()
+
+            # Return a success message
+            return {"message": f"Comment {Comment.comment_id} updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Comment not found")
 
 
 # ------------------------  Группы задач и их связи с задачами и комментариями  -------------------------------------
