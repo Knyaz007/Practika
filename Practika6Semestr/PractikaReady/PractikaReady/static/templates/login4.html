@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login3</title>
+</head>
+<body>
+  <h1>Login3</h1>
+
+  <form id="loginForm" >
+    <input type="text" name="email" name="Email" required>
+    <input type="password" name="password" name="Password" required>
+    <input type="submit" value="Login">
+  </form>
+
+ <script>
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var form = event.target;
+    var email = form.querySelector('input[name="email"]').value;
+    var password = form.querySelector('input[name="password"]').value;
+
+    fetch("/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      var accessToken = data.access_token;
+
+      // Установка времени истечения куки на 2 минуты от текущего времени
+      var currentTime = new Date();
+      var expirationTime = new Date(currentTime.getTime() + (2 * 60 * 1000));
+
+      // Преобразование времени истечения в строку в формате GMT
+      var expires = expirationTime.toGMTString();
+
+      // Установка куки с токеном и временем истечения
+      document.cookie = `token=${accessToken}; expires=${expires}; path=/`;
+
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
+
+      if (tokenCookie) {
+        const token = tokenCookie.split('=')[1];
+        fetch('/users', { headers: { Authorization: `Bearer ${token}` } })
+          .then(response => {
+            if (response.ok) {
+              // Обработка успешного ответа
+             // window.location.replace('/users');
+            } else {
+              throw new Error('Network response was not ok.');
+            }
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
+      } else {
+        // Куки с токеном не найдены, выполните соответствующие действия
+        window.location.replace('/login');
+      }
+    })
+    .catch(function (error) {
+      console.error('Login failed. Please try again.', error);
+    });
+  });
+</script>
+   
+</body>
+</html>

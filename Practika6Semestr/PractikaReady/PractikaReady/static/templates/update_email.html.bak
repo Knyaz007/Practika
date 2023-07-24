@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update User Email</title>
+</head>
+<body>
+  <form id="update-email-form">
+    <label for="email">New Email:</label>
+    <input type="email" id="email" name="email">
+
+    <button type="submit">Update Email</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('update-email-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+
+      const userId = 1; // Замените 1 на фактический идентификатор пользователя
+
+      try {
+        const response = await fetch(`/userщs/${userId}/email?email=${email}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert('Email updated successfully!');
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.error}`);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

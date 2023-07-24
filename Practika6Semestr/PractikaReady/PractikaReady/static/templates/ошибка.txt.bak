@@ -1,0 +1,115 @@
+работающий но некорктно
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body>
+  <h1>Login</h1>
+
+  <form id="loginForm" action="/token" method="post">
+    <input type="text" name="email" name="Email" required>
+    <input type="password" name="password" name="Password" required>
+    <input type="submit" value="Login">
+  </form>
+
+ <script>
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var form = event.target;
+    var email = form.querySelector('input[name="email"]').value;
+    var password = form.querySelector('input[name="password"]').value;
+
+    fetch("/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      var accessToken = data.access_token;
+
+      // Save the access token in local storage for later use
+      localStorage.setItem("accessToken", accessToken);
+      console.log(headers)
+      // Redirect to the protected route or perform other actions
+      window.location.href = "/users";
+	  
+    })
+    .catch(function (error) {
+      console.error(error);
+      alert("Login failed. Please try again.");
+    });
+  });
+
+  // Add this code to make requests to the protected route
+  const token = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
+
+  fetch('/users', { headers })
+    .then(response => response.json())
+    .then(data => console.log(data));
+</script>
+
+   
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var form = event.target;
+      var email = form.querySelector('input[name="email"]').value;
+      var password = form.querySelector('input[name="password"]').value;
+
+      fetch("/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        var accessToken = data.access_token;
+
+ 
+        // Save the access token in local storage or session storage for later use
+        localStorage.setItem("accessToken", accessToken);
+
+        // Output access token and authorization header to console
+        console.log("Access Token:", accessToken);
+        console.log("Authorization Header:", "Bearer " + accessToken);
+
+        // Redirect to the protected route or perform other actions
+        window.location.href = "/users";
+      })
+      .catch(function (error) {
+        console.error(error);
+        alert("Login failed. Please try again.");
+      });
+    });
+  </script>

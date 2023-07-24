@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login2</title>
+</head>
+<body>
+  <h1>Login2</h1>
+
+  <form id="loginForm" action="/token" method="post">
+    <input type="text" name="email" name="Email" required>
+    <input type="password" name="password" name="Password" required>
+    <input type="submit" value="Login">
+  </form>
+
+ <script>
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var form = event.target;
+    var email = form.querySelector('input[name="email"]').value;
+    var password = form.querySelector('input[name="password"]').value;
+
+    fetch("/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(function (response) { // получаем ответ от сервера в формате JSON и извлекаем токен доступа из данных ответа.
+      return response.json();
+    })
+    .then(function (data) {  //  сохраняем токен доступа в локальном хранилище браузера, чтобы использовать его позже при запросах к защищенным маршрутам.
+      var accessToken = data.access_token; // return {"access_token": access_token, "token_type": "bearer"}
+
+      // Save the access token in local storage for later use
+      localStorage.setItem("accessToken", accessToken);
+      console.log(headers)
+	   
+      // Redirect to the protected route or perform other actions
+      window.location.href = "/users"; // перенаправляем пользователя на защищенный маршрут
+	  
+    })
+    .catch(function (error) {
+	  var errorww= error
+      console.error("После кнопки.", errorww);
+	  
+      //alert("Login failed. Please try again.");
+    });
+  });
+  console.error("После загрузки.");
+  // Add this code to make requests to the protected route
+  const token = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
+
+  fetch('/users', { headers })
+    .then(response => response.json())
+    .then(data => console.log(data));
+</script>
+
+   
+</body>
+</html>

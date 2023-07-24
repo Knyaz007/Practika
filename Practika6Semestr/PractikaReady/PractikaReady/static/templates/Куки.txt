@@ -1,0 +1,39 @@
+
+/ Получение текущей даты и времени
+var currentTime = new Date();
+
+// Установка времени истечения куки на 2 минуты от текущего времени
+var expirationTime = new Date(currentTime.getTime() + (2 * 60 * 1000));
+
+// Преобразование времени истечения в строку в формате GMT
+var expires = expirationTime.toGMTString();
+
+// Установка куки с токеном и временем истечения
+document.cookie = `token=ваш_токен; expires=${expires}; path=/`;  // При переходе на страницу /users, получаем токен из cookie и добавляем его в заголовки запроса
+const cookies = document.cookie.split(';');
+const token = cookies.find(cookie => cookie.trim().startsWith('token=')).split('=')[1];
+fetch('/users', { headers: { Authorization: `Bearer ${token}` } })
+  .then(response => {
+    // Обработка ответа
+  })
+  .catch(error => {
+    // Обработка ошибки
+  }); так получается
+
+куки время
+const cookies = document.cookie.split(';');
+const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
+
+if (tokenCookie) {
+  const token = tokenCookie.split('=')[1];
+  fetch('/users', { headers: { Authorization: `Bearer ${token}` } })
+    .then(response => {
+      // Обработка ответа
+    })
+    .catch(error => {
+      // Обработка ошибки
+    });
+} else {
+  // Куки с токеном не найдены, выполните соответствующие действия
+  window.location.replace('/login');
+}

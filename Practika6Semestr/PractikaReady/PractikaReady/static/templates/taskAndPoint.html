@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Error</title>
+</head>
+<body>
+  <h1>Error</h1>
+
+<form id="viewTaskForm" action="/Users" method="POST">
+  {% for user in users %}
+    <label for="userId">ID пользователя: {{ user.id }}</label>
+    <input type="text" id="userId" name="userId" value="{{ user.id }}" readonly>
+    
+    <label for="userName">Имя пользователя: {{ user.email }}</label>
+    <input type="text" id="userName" name="userName" value="{{ user.email }}" readonly>
+  {% endfor %}
+  
+  <input type="submit" value="Посмотреть пользователей">
+</form>
+
+</body>
+</html>

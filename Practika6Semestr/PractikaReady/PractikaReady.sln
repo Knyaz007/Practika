@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PractikaReady", "PractikaReady\PractikaReady.pyproj", "{F84E953A-6934-48F8-ADD5-68DA7783268C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F84E953A-6934-48F8-ADD5-68DA7783268C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84E953A-6934-48F8-ADD5-68DA7783268C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26A7D131-C1ED-4A9F-8F8B-D8B1DE0D271E}
+	EndGlobalSection
+EndGlobal

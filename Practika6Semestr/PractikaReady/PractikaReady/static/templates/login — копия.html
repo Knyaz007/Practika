@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>login.html</title>
+</head>
+<body>
+  <h1>login.html</h1>
+
+  <form action="/users" method="get">
+    {{ access_token }}
+    <input type="hidden" name="access_token" value="{{ access_token }}">
+    <input type="submit" value="Access Protected Route">
+  </form>
+</body>
+</html>

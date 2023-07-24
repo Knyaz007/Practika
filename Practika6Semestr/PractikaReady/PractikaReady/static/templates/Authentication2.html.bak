@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Authentication2.html</title>
+</head>
+<body>
+  <h1>Authentication2.html</h1>
+
+  <form action="/token" method="post">
+  <label for="email">Email:</label>
+  <!--иначе {"detail":[{"loc":["body","username"],"msg":"field required","type":"value_error.missing"}]}-->
+  
+  <input type="email" id="email" name="username" required>
+  <br>
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required>
+  <br>
+  <input type="submit" value="Login">
+</form>
+</body>
+</html>
